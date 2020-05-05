@@ -8,7 +8,7 @@
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+        <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
         <title>食べなび！</title>
     </head>
 
@@ -65,6 +65,55 @@
                 </a>
             </div>
         </section>
+
+        <section class="search-sec">
+            <div class="container">
+                <form method="GET" action="{% url 'techapp:search' %}" name="searchform">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                    <select class="form-control search-slt" name="pref">
+                                        <option value="">都道府県</option>
+                                        {% for item in pref_list %}
+                                        <option value="{{item.pref}}">{{ item.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                <select class="form-control search-slt" name="category_l">
+                                    <option value="">カテゴリ</option>
+                                    {% for item in category_list %}
+                                    <option value="{{item.category_l}}">{{ item.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                    <input class="form-control search-slt" type="text" placeholder="フリーワード" aria-label="Search" name="freeword">
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+                                    <button type="submit" class="btn search-btn">検索</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <br/><br/>
+                    <hr/>
+                    <p>tabenavi</p>
+                    <a href="https://api.gnavi.co.jp/api/scope/" target="_blank">
+                      <img src="https://api.gnavi.co.jp/api/img/credit/api_265_65.gif" width="265" height="65" border="0" alt="グルメ情報検索サイト　ぐるなび">
+                    </a>
+                    <br/><br/>  
+                </div>
+            </div>
+        </div>
 
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
