@@ -76,6 +76,21 @@ def extract_restaurant_info(restaurants: 'restaurant response') -> 'restaurant l
 
 
 
+def shopinfo(request, restid):
+    keyid = get_key_id()
+    id = restid
+    query = get_gnavi_data(id, "", "", "", 1)
+    res_list = rest_search(query)
+    restaurants_info = extract_restaurant_info(res_list)
+
+    params = {
+        'title': '店舗詳細',
+        'restaurants_info': restaurants_info
+    }
+
+    return render(request, 'techapp/shop_info.html', params)
+
+
 class IndexView(TemplateView):
     template_name = "techapp/index.html"
 
