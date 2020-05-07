@@ -1,11 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView, TemplateView
 
 from .models import Category, Pref
-from .forms import SearchForm
+from .forms import SearchForm, SignUpForm
+from django.contrib.auth import login, authenticate
 import json
 import requests
+
 
 def get_key_id():
     key_id = "e45a551c836ba0e0bfc85d72d5ca03b2"
@@ -103,3 +105,17 @@ class IndexView(TemplateView):
         }
         return params
 
+class Signup(CreateView):
+    form_class = SignUpForm
+    template_name = 'techapp/signup.html'
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('techapp:index')
+        return render(request, 'techapp/signup.html', {'form': form})
