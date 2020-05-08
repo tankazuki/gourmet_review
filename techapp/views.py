@@ -5,7 +5,7 @@ from django.views.generic import CreateView, DeleteView, UpdateView, ListView, T
 from .models import Category, Pref
 from .forms import SearchForm, SignUpForm, LoginForm
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 import json
 import requests
 
@@ -124,3 +124,6 @@ class Signup(CreateView):
 class Login(LoginView):
     form_class = LoginForm
     template_name = 'techapp/login.html'
+
+class Logout(LogoutView):
+    template_name = 'techapp/logout.html'

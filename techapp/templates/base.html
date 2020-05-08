@@ -27,7 +27,7 @@
             <ul class="navbar-nav mr-auto">
               {% if user.is_authenticated %}
               <li>
-                <a class="nav-item nav-link" href="">ログアウト</a>
+                <a class="nav-item nav-link" href="{% url 'techapp:logout' %}">ログアウト</a>
               </li>
               {% else %}
               <li class="nav-item">
