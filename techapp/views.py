@@ -3,8 +3,9 @@ from django.shortcuts import render, redirect
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView, TemplateView
 
 from .models import Category, Pref
-from .forms import SearchForm, SignUpForm
+from .forms import SearchForm, SignUpForm, LoginForm
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.views import LoginView
 import json
 import requests
 
@@ -119,3 +120,7 @@ class Signup(CreateView):
             login(request, user)
             return redirect('techapp:index')
         return render(request, 'techapp/signup.html', {'form': form})
+
+class Login(LoginView):
+    form_class = LoginForm
+    template_name = 'techapp/login.html'

@@ -124,3 +124,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'techapp/static'),
 ]
+
+LOGIN_URL = 'techapp:login'
+LOGIN_REDIRECT_URL = 'techapp:index'
