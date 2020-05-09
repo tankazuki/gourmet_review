@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect
 
 from django.views.generic import CreateView, DeleteView, UpdateView, ListView, TemplateView
 
-from .models import Category, Pref
-from .forms import SearchForm, SignUpForm, LoginForm
+from .models import Category, Pref, Review
+from .forms import SearchForm, SignUpForm, LoginForm, ReviewForm
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView, LogoutView
+from django.db.models import Avg
 import json
 import requests
 
@@ -86,9 +87,48 @@ def shopinfo(request, restid):
     res_list = rest_search(query)
     restaurants_info = extract_restaurant_info(res_list)
 
+    review_count = Review.objects.filter(shop_id=restid).count()
+    score_ave = Review.objects.filter(shop_id=restid).aggregate(Avg('score'))
+    average = score_ave['score__avg']
+
+    if average:
+        average_rate = average / 5 * 100
+    else:
+        average_rate = 0
+
+    if request.method == "GET":
+        review_form = ReviewForm()
+        review_list = Review.objects.filter(shop_id = restid)
+
+    else:
+        form = ReviewForm(request.POST)
+        score = request.POST['score']
+        comment = request.POST['comment']
+
+        if form.is_valid():
+            review = Review()
+            review.shop_id = restid
+            review.shop_name = restaurants_info[0][1]
+            review.shop_kana = restaurants_info[0][2]
+            review.shop_address = restaurants_info[0][7]
+            review.image_url = restaurants_info[0][5]
+            review.user = request.user
+            review.score = score
+            review.comment = comment
+            review.save()
+            return redirect('techapp:shopinfo', restid)
+        else:
+            return redirect('techapp:shopinfo', restid)
+        return render(request, 'techapp/index.html', {})
+
     params = {
         'title': '店舗詳細',
-        'restaurants_info': restaurants_info
+        'restaurants_info': restaurants_info,
+        'review_count': review_count,
+        'review_list': review_list,
+        'review_form': review_form,
+        'average': average,
+        'average_rate': average_rate
     }
 
     return render(request, 'techapp/shop_info.html', params)
@@ -127,3 +167,4 @@ class Login(LoginView):
 
 class Logout(LogoutView):
     template_name = 'techapp/logout.html'
+
