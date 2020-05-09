@@ -1,6 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+SCORE_CHOICES = [
+    (1, '★'),
+    (2, '★★'),
+    (3, '★★★'),
+    (4, '★★★★'),
+    (5, '★★★★★'),
+]
+
 class Category(models.Model):
   category_l = models.CharField("業態カテゴリ", max_length=10, blank=False)
   name = models.CharField("業態名", max_length=30, blank=False)
@@ -11,3 +19,24 @@ class Pref(models.Model):
 
   def __str__(self):
       return str(self.name)
+
+class Review(models.Model):
+  shop_id = models.CharField("店舗ID", max_length=10, blank=False)
+  shop_name = models.CharField("店舗名", max_length=200, blank=False)
+  image_url = models.CharField("画像URL", max_length=300, blank=True)
+  user = models.ForeignKey(User, on_delete=models.CASCADE)
+  comment = models.TextField(verbose_name="レビューコメント", blank=False)
+  score = models.PositiveSmallIntegerField(verbose_name="レビュースコア", choices=SCORE_CHOICES, default=3)
+  created_at = models.DateTimeField(auto_now_add=True)
+  update_at = models.DateTimeField(auto_now_add=True)
+
+  class Meta:
+    unique_together = ('shop_id', 'user')
+
+  def __str__(self):
+    return str(self.shop_id)
+
+
+  def get_percent(self):
+    percent = round(self.score / 5 * 100)
+    return percent
